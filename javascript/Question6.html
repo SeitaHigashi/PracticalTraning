@@ -42,6 +42,10 @@
       cube = new THREE.Mesh( geometry, material );
       scene.add(cube);
 
+      var cube2=new THREE.Mesh(geometry,material);
+      cube2.position.set(0,-cube_size/2,cube_size/2);
+      scene.add(cube2);
+
       renderer = new THREE.WebGLRenderer();
       renderer.setPixelRatio( window.devicePixelRatio );
       renderer.setSize( window.innerWidth, window.innerHeight );
@@ -54,18 +58,22 @@
       mouseY = ( event.clientY - windowHalfY ) * 10;
     }
 
+var step=0;
     function animate() {
       requestAnimationFrame( animate );
 
       var axis = new THREE.Vector3(1,0,0);
       axis.normalize();
       var q = new THREE.Quaternion();
-      var rotate = cube.quaternion.x + (mouseX - cube.quaternion.x)*.01;
+      //var rotate = cube.quaternion.x + (mouseX - cube.quaternion.x)*.01;
+      var rotate = step/100;
       q.setFromAxisAngle(axis,rotate);
       cube.quaternion.copy(q);
 
       cube.position.set(0,cube_size/2*Math.sqrt(2)*Math.cos(rotate+Math.PI/4),cube_size/2*Math.sqrt(2)*Math.sin(rotate+Math.PI/4));
       camera.lookAt( scene.position );
+
+      step+=1;
 
       renderer.render( scene, camera );
     }
