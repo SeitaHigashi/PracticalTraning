@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>ÂÜÅEåê„ÅÆÊºîËÅE</title>
+  <meta charset="utf-8">
+  <style>
+    div#canvas{ width: 512px; height: 512px; }
+  </style>
+
+  <script src="../js/three.js"></script>
+
+  <script>
+    var container, stats;
+    var camera, scene, renderer;
+    var geometry, group;
+    var mouseX = 0, mouseY = 0;
+    var mouseXbuff = 0;
+    var windowHalfX = window.innerWidth / 2;
+    var windowHalfY = window.innerHeight / 2;
+    var spheres = {};
+    var cube;
+    let radius = 40;
+    let height = 150;
+    document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+
+    function init() {
+      canvas = document.getElementById('canvas');
+      //container = document.createElement( 'div' );
+      //document.body.appendChild( container );
+
+      camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
+      camera.up.set(0, 1, 0);
+      camera.position.x =600;
+      camera.position.y = 100;
+
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color( 0xffffff );
+      //scene.fog = new THREE.Fog( 0xffffff, 1, 10000 );
+
+      var geometry = new THREE.CylinderGeometry(radius,0,height,15);
+      var material = new THREE.MeshNormalMaterial();
+
+      cube = new THREE.Mesh( geometry, material );
+      scene.add(cube);
+
+      renderer = new THREE.WebGLRenderer();
+      renderer.setPixelRatio( window.devicePixelRatio );
+      renderer.setSize( window.innerWidth, window.innerHeight );
+      canvas.appendChild( renderer.domElement );
+      //container.appendChild( renderer.domElement );
+    }
+
+    function onDocumentMouseMove(event) {
+      mouseX = ( event.clientX - windowHalfX ) * 10;
+      mouseY = ( event.clientY - windowHalfY ) * 10;
+    }
+
+var step = 0;
+    function animate() {
+      requestAnimationFrame( animate );
+
+      var axis = new THREE.Vector3(Math.sin(step),0,Math.cos(step));
+      axis.normalize();
+      var q = new THREE.Quaternion();
+      var rotate = Math.atan(radius/height);
+      q.setFromAxisAngle(axis,rotate-Math.PI/2);
+      cube.quaternion.copy(q);
+
+      size=Math.sqrt(radius**2 + height**2)/2;
+      cube.position.set(size*Math.cos(-step),0,size*Math.sin(-step));
+
+      camera.lookAt( scene.position );
+
+      step+=0.01;
+
+      renderer.render( scene, camera );
+    }
+  </script>
+</head>
+<body>
+  <div id="canvas"></div>
+  <script>
+    init();
+    animate();
+  </script>
+
+</body>
+</html>
